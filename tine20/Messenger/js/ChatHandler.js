@@ -85,12 +85,7 @@ Tine.Messenger.ChatHandler = {
         }
 	
 
-	(function() {
-	    Tine.Messenger.VideoChat.setIconVisible( 
-		chat, 
-		Tine.Messenger.VideoChat.enabled && !Tine.Messenger.RosterHandler.isContactUnavailable(jid)
-	    )
-	}).defer(50);
+	Tine.Messenger.VideoChat.setIconDisabled(chat, jid);
    
         return chat;
     },

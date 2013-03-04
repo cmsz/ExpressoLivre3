@@ -71,7 +71,7 @@ Tine.Messenger.VideoChat = {
 	    'id': myId,
 	    'user': Tine.Messenger.Util.getJidFromConfigNoResource()
 	});
-	
+
 	Tine.Messenger.Application.connection.send(info);         
     },
     sendRejectCall: function(item){
@@ -205,15 +205,19 @@ Tine.Messenger.VideoChat = {
 	    Tine.Messenger.VideoChat.invite.hide();
 	    
 	    var app = Tine.Tinebase.appMgr.get('Messenger');
-	    Tine.Messenger.ChatHandler.setChatMessage(
-		user, 
-		String.format(
-		    app.i18n._('One video chat call missed from {0}'), 
-		    user
-		),
-		app.i18n._('Info'),
-		'messenger-notify'
-	    );
+	    var chat_id = Tine.Messenger.ChatHandler.formatChatId(user);
+	    if(typeof(Ext.getCmp(chat_id)) != 'undefined' && Ext.getCmp(chat_id) != null){
+	    
+		Tine.Messenger.ChatHandler.setChatMessage(
+		    user, 
+		    String.format(
+			app.i18n._('One video chat call missed from {0}'), 
+			user
+		    ),
+		    app.i18n._('Info'),
+		    'messenger-notify'
+		);
+	    }
 	}
 	
 	
@@ -277,14 +281,14 @@ Tine.Messenger.VideoChat = {
 	if(movie && typeof(movie.startApp) != "undefined"){
 	    movie.startApp(Tine.Messenger.VideoChat.rtmfpServerUrl, Tine.Messenger.Util.getJidFromConfigNoResource());
 	}
-	    
+
 	return true;
     },
     /**
      * Both sides of videochat call this function. The side is identified by the state.
      */
     myId: function(id){
-	
+
 	Tine.Messenger.VideoChat.id = id;
 	if(Tine.Messenger.VideoChat.state == VideoChatStates.CALL_CALLING){
 	    Tine.Messenger.VideoChat.acceptCallFrom(Tine.Messenger.VideoChat.jid);
@@ -427,11 +431,18 @@ Tine.Messenger.VideoChat = {
 	if(Tine.Messenger.VideoChat.hided){
 	    
 	    _box.setWidth(Tine.Messenger.VideoChat.originalChatWidth + Tine.Messenger.VideoChat.flashVideoWidth);
+	    
+//	    Tine.Messenger.VideoChat.originalChatHeight = _box.getHeight();
+//	    _box.setHeight(Tine.Messenger.VideoChat.flashVideoHeight + 200);
+	    
+	    
 	    _box.getComponent('messenger-chat-videochat').getEl().setWidth(Tine.Messenger.VideoChat.flashVideoWidth);
 	    
-	    _box.getTopToolbar().getComponent('messenger-chat-video').setVisible(false);
+	    Tine.Messenger.VideoChat.setIconDisabled(_box, Tine.Messenger.VideoChat.jid, true); // disable
 	    
 	    _box.doLayout();
+	    
+	    
 
 	    Tine.Messenger.VideoChat.hided = false;
 	}
@@ -441,15 +452,15 @@ Tine.Messenger.VideoChat = {
     hideVideoChat : function(_box){
 	if(!Tine.Messenger.VideoChat.hided){
 	    _box.setWidth(Tine.Messenger.VideoChat.originalChatWidth);
+	    //_box.setHeight(Tine.Messenger.VideoChat.originalChatHeight);
+	    
 	    _box.getComponent('messenger-chat-videochat').getEl().setWidth(0);
 	    
-	    _box.getTopToolbar().getComponent('messenger-chat-video').setVisible(
-		!Tine.Messenger.RosterHandler.isContactUnavailable(Tine.Messenger.VideoChat.jid)
-	    );
-
 	    _box.doLayout();
 
 	    Tine.Messenger.VideoChat.hided = true;
+	    
+	    Tine.Messenger.VideoChat.setIconDisabled(_box, Tine.Messenger.VideoChat.jid);
 	}
 	
     },
@@ -468,12 +479,13 @@ Tine.Messenger.VideoChat = {
 	return chat;
     },
     
-    
-    
-    
-    setIconVisible: function(chat, visible){
+    setIconDisabled: function(chat, jid, unavailable){
+	unavailable = typeof unavailable !== 'undefined' ? unavailable : Tine.Messenger.RosterHandler.isContactUnavailable(jid);
+	var disabled = !Tine.Messenger.VideoChat.enabled || unavailable || !Tine.Messenger.VideoChat.hided;
+	
+	
 	if(chat !== null && chat.getTopToolbar !== undefined){
-	    chat.getTopToolbar().getComponent('messenger-chat-video').setVisible(visible);
+	    chat.getTopToolbar().getComponent('messenger-chat-video').setDisabled(disabled);
 	}
     }
     

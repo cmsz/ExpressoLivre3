@@ -9,8 +9,8 @@ Tine.Messenger.Chat = Ext.extend(Ext.Window, {
         cls:         'messenger-chat-window',
         width:       460,
         minWidth:    400,
-        height:      378,
-        minHeight:   378,
+        height:      458,
+        minHeight:   458,
         closeAction: 'hide', //'close' - destroy the component
         collapsible: true,
         plain:       true,
@@ -38,7 +38,7 @@ Tine.Messenger.Chat = Ext.extend(Ext.Window, {
                     itemId: 'messenger-chat-video',
                     icon: '/images/messenger/webcam.png',
                     tooltip: app.i18n._('Start video chat'),
-                    hidden: true,
+                    disabled: true,
                     handler: function() {
 						var window_chat = this.ownerCt.ownerCt,
 						id = window_chat.id.substr(MESSENGER_CHAT_ID_PREFIX.length),
@@ -164,7 +164,9 @@ Tine.Messenger.Chat = Ext.extend(Ext.Window, {
     },
     
     setTextfieldFocus: function () {
-        this.getComponent('messenger-chat-textchat').getComponent(1).getComponent(0).focus(false, 200); // foco no textfield
+        //this.getComponent('messenger-chat-textchat').getComponent(1).getComponent(0).focus(false, 200); // foco no textfield
+	this.getComponent(2).getComponent(0).focus(false, 200);
+	
     }
     
 });
