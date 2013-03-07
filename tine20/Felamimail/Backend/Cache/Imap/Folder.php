@@ -583,8 +583,5 @@ Tinebase_Core::getLogger()->alert(__METHOD__ . '#####::#####' . __LINE__ . ' Fol
             'accountId'     => $accountId,
             'globalName'      => $globalName
         );
-        
-        
     }
-    
 }
