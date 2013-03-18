@@ -198,7 +198,7 @@ class Felamimail_Backend_Cache_Imap_Message extends Felamimail_Backend_Cache_Ima
             $folderId = array_pop($tmp);
             $folder = Felamimail_Backend_Cache_Imap_Folder::decodeFolderUid($folderId);
 
-            $return[$folderId] = array($userId, $folder['globalName']);
+            $return[$folderId] = array($userId, Felamimail_Model_Folder::decodeFolderName($folder['globalName']));
         }
 
         return $return;
